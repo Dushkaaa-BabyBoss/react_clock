@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './App.scss';
 
-// function getRandomName(): string {
-//   const value = Date.now().toString().slice(-4);
+function getRandomName(): string {
+  const value = Date.now().toString().slice(-4);
 
-//   return `Clock-${value}`;
-// }
+  return `Clock-${value}`;
+}
 
 type ClockProps = {
   name: string;
@@ -24,7 +24,7 @@ export class Clock extends Component<ClockProps, ClockState> {
 
   componentDidMount(): void {
     this.timerId = window.setInterval(() => {
-      let currentTime = new Date().toUTCString().slice(-12, -4);
+      const currentTime = new Date().toUTCString().slice(-12, -4);
 
       this.setState({ time: currentTime });
       // eslint-disable-next-line no-console
@@ -67,17 +67,11 @@ type AppState = {
   clockName: string;
 };
 
-export class App extends Component<AppState> {
+export class App extends Component<{}, AppState> {
   state: AppState = {
     hasClock: true,
     clockName: 'Clock-0',
   };
-
-  getRandomName(): string {
-    const value = Date.now().toString().slice(-4);
-
-    return `Clock-${value}`;
-  }
 
   handleRightClick = (event: MouseEvent) => {
     event.preventDefault();
@@ -89,10 +83,16 @@ export class App extends Component<AppState> {
   };
 
   updateClockName() {
-    this.setState(() => {
-      const newName = this.getRandomName();
+    const newName = getRandomName();
 
-      return { clockName: newName };
+    this.setState(prevState => {
+      if (newName !== prevState.clockName) {
+        return {
+          clockName: newName,
+        };
+      }
+
+      return null;
     });
   }
 
